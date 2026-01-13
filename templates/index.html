@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>守望影神图集案器 v0.2</title>
+    <link rel="icon" href="static\img\吴国太-淑逸闲华.png" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Quicksand:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <!-- Using a local or CDN font awesome for icons if possible, but I'll use emoji for now to be safe/portable -->
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-left">
+                    <a href="https://space.bilibili.com/1284158907?spm_id_from=333.337.0.0" target="_blank">
+                    <img src="static/img/吴国太-淑逸闲华.png" alt="吴国太-淑逸闲华" style="height: 40px; width: auto;">
+                </a>
+                <a href="https://space.bilibili.com/1284158907?spm_id_from=333.337.0.0" target="_blank"
+                    class="author-link">作者：守望</a>
+                
+                <button id="settingsBtn" class="settings-btn" title="设置">⚙️
+                    <div>设置</div>
+                </button>
+            </div>
+            <div class="header-center">
+                <h1 class="app-title">守望影神图集案器 v0.2</h1>
+            </div>
+            <div class="header-right">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="搜索...">
+                    <span id="searchClear" class="search-clear">X</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="main-body">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="sidebar-header">
+                    <h3>images</h3>
+                    <div class="sidebar-sort">
+                        <select id="sortSelectSidebar" title="排序方式">
+                            <option value="name_asc">名称 (升序)</option>
+                            <option value="name_desc">名称 (降序)</option>
+                            <option value="date_new">修改日期 (新->旧)</option>
+                            <option value="date_old">修改日期 (旧->新)</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="folderTree" class="folder-tree">
+                    <!-- Tree content injected by JS -->
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="content-area">
+                <div class="content-toolbar">
+                    <div class="breadcrumbs" id="breadcrumbs">
+                        <span>root</span>
+                    </div>
+                    <div class="status-bar" id="statusBar">
+                        <!-- Count info -->
+                    </div>
+                    <div class="sort-controls">
+                        <select id="sortSelect">
+                            <option value="name_asc">名称 (升序)</option>
+                            <option value="name_desc">名称 (降序)</option>
+                            <option value="date_new">修改日期 (新->旧)</option>
+                            <option value="date_old">修改日期 (旧->新)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="imageGrid" class="image-grid">
+                    <!-- Grid items injected by JS -->
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Input Modal -->
+    <div id="inputModal" class="modal">
+        <div class="modal-content small-modal">
+            <div class="modal-header">
+                <h3 id="inputModalTitle">输入</h3>
+                <span class="close-input-modal close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="inputModalInput" class="full-width-input" autocomplete="off">
+            </div>
+            <div class="modal-footer">
+                <button id="inputModalCancelBtn" class="btn btn-secondary">取消</button>
+                <button id="inputModalConfirmBtn" class="btn btn-primary">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Modal -->
+    <div id="confirmModal" class="modal">
+        <div class="modal-content small-modal">
+            <div class="modal-header">
+                <h3 id="confirmModalTitle">确认</h3>
+                <span class="close-confirm-modal close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p id="confirmModalMessage"></p>
+            </div>
+            <div class="modal-footer">
+                <button id="confirmModalCancelBtn" class="btn btn-secondary">取消</button>
+                <button id="confirmModalConfirmBtn" class="btn btn-primary">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>编辑单元</h2>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>文件名 (不含后缀)</label>
+                    <input type="text" id="editFilename">
+                </div>
+                <div class="form-group image-preview-container">
+                    <img id="editImagePreview" src="" alt="Preview">
+                    <div class="drop-overlay">拖拽图片替换</div>
+                </div>
+                <div class="form-group">
+                    <label>Prompt</label>
+                    <textarea id="editPrompt" rows="10"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="cancelEditBtn" class="btn btn-secondary">取消</button>
+                <button id="saveEditBtn" class="btn btn-primary">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-content small-modal">
+            <div class="modal-header">
+                <h3>设置</h3>
+                <span class="close-settings-modal close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>主题设置</label>
+                    <select id="themeSelect" class="full-width-input">
+                        <option value="light">白紫粉 (Komi风格)</option>
+                        <option value="dark">黑紫蓝 (暗色风格)</option>
+                    </select>
+                    
+                </div>
+                <div class="about-section">
+                    <h3>开源项目协作与资源征集说明</h3>
+                    <h4>交流与反馈渠道</h4>
+                    <ul>
+                        <li>QQ交流群：655874132</li>
+                        <li>使用教程：点击设置旁的图标即可自动跳转作者主页</li>
+                    </ul>
+                    
+                    <h4>项目基础信息</h4>
+                    <p>注：本项目为开源项目</p>
+                    <ul>
+                        <li>项目地址：<a href="https://github.com/shouwang37/SHOUWANG-SD-Prompt-toolbox" target="_blank" id="projectLink">https://github.com/shouwang37/SHOUWANG-SD-Prompt-Kit</a>（如果感觉还不错欢迎点击 star）</li>
+                    </ul>
+                    
+                    <h4>tag 资源志愿征集</h4>
+                    <p>因开发者精力有限，无法全面收集并调试项目全量 tag，现特向所有项目使用者志愿征集调试完成的 tag。</p>
+                    <p>征集到的 tag 会统一整理，后续将以两种形式发放：</p>
+                    <ol>
+                        <li>整合至项目新版本打包发布</li>
+                        <li>单独打包为 imageData.zip，发布至 GitHub 或交流群内</li>
+                    </ol>
+                    <p>有需求的朋友可直接加入交流群，免费下载使用。</p>
+                    
+                    <h4>本地包替换 / 修改指引</h4>
+                    <p>本地包替换路径：守望影神图集案器 xx\imageData</p>
+                    
+                    <h4>imageData 模块说明</h4>
+                    <p>本项目基础功能支持自定义图片配置，同名的图片文件与 txt 文件为一个独立配置单元，在该单元下可对 tags 进行任意增删改查操作。</p>
+                    <p>投稿类型包括但不限于如下：</p>
+                    <ul>
+                        <li>01 - 人物</li>
+                        <li>02 - 画风</li>
+                        <li>03 - 动作</li>
+                        <li>04 - 表情</li>
+                        <li>05 - 服饰</li>
+                        <li>06 - 构图</li>
+                        <li>07 - 环境</li>
+                        <li>08 - 物品</li>
+                        <li>09 - 身体特征</li>
+                        <li>10 - ...</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="closeSettingsBtn" class="btn btn-primary">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Full Image Modal -->
+    <div id="fullImageModal" class="full-image-modal">
+        <img id="fullImage" src="" alt="Full View">
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <script src="/static/js/script.js"></script>
+</body>
+
+</html>

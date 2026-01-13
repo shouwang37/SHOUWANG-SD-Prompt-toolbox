@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environment
+.venv/
+venv/
+env/
+
+# User Data (根据需要决定是否上传)
+# 如果您希望 git 仓库只包含代码，不包含您的图片数据，请取消下面这行的注释
+# imageData/
+
+# IDE
+.vscode/
+.idea/
+
+# Portable dir (if using portable python)
+python-portable/
+
+# Logs
+*.log
+
+# System
+.DS_Store
+Thumbs.db
