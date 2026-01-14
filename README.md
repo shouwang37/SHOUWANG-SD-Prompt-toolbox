@@ -68,6 +68,8 @@ python app.py
 ---
 *Created with ❤️ by Shouwang & AI Assistant*
 
+### 数据来源感谢
 
+​	[lanner0403/WAI-NSFW-illustrious-character-select: WAI-NSFW-illustrious 角色選擇器](https://github.com/lanner0403/WAI-NSFW-illustrious-character-select)
 
-本项目采用 [Apache License 2.0](LICENSE) 开源许可证。
+本项目采用 [Apache License 2.0](LICENSE) 开源许可证。	
